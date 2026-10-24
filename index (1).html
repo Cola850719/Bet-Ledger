@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bet Ledger – Bankroll &amp; Fantasy Tracker</title>
+<title>Matchday Ledger – Bankroll &amp; Fantasy Tracker</title>
 <meta name="description" content="Free bankroll and fantasy football tracker. Your data never leaves your browser.">
 <style>
 /* ===== THEME TOKENS (edit colours here) ===== */
@@ -17,7 +17,7 @@ h1{font-size:1.75rem;font-weight:500;letter-spacing:.005em;margin:0;display:flex
 h2{font-size:1.2rem;font-weight:500;margin:0 0 14px}
 .mark{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--acc);position:relative;flex:none}
 .mark::after{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--acc)}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+.top{display:flex;justify-content:space-Matchdayween;align-items:center;gap:12px;margin-bottom:24px}
 .top p{margin:4px 0 0 38px;color:var(--mute);font-size:.9rem}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 16px;transition:border-color .15s,transform .15s,filter .15s}
@@ -78,7 +78,7 @@ td select{padding:5px 6px}
 <!-- ===== HEADER ===== -->
 <header class="top">
   <div>
-    <h1><span class="mark" aria-hidden="true"></span>Bet Ledger</h1>
+    <h1><span class="mark" aria-hidden="true"></span>Matchday Ledger</h1>
     <p>Track your sports bankroll and fantasy form. Everything stays in this browser.</p>
   </div>
   <button id="themeBtn" aria-label="Switch light or dark theme">&#9680;</button>
@@ -101,8 +101,8 @@ td select{padding:5px 6px}
   <section class="stats" id="stats"></section>
 
   <section class="panel">
-    <h2>Log a bet</h2>
-    <form id="betForm">
+    <h2>Log a Matchday</h2>
+    <form id="MatchdayForm">
       <label>Date<input type="date" id="bDate" required></label>
       <label>Match or selection<input id="bName" required maxlength="60" placeholder="Arsenal v Spurs, over 2.5"></label>
       <label>Market
@@ -113,17 +113,17 @@ td select{padding:5px 6px}
       <label>Result
         <select id="bRes"><option value="pending">Pending</option><option value="won">Won</option><option value="lost">Lost</option><option value="void">Void</option></select>
       </label>
-      <button class="primary">Add bet</button>
+      <button class="primary">Add Matchday</button>
     </form>
   </section>
 
   <section class="panel">
-    <h2>Bet history</h2>
+    <h2>Matchday history</h2>
     <div class="scroll"><table>
       <thead><tr><th>Date</th><th>Selection</th><th>Stake</th><th>Odds</th><th>Result</th><th>Profit</th><th></th></tr></thead>
-      <tbody id="betRows"></tbody>
+      <tbody id="MatchdayRows"></tbody>
     </table></div>
-    <div id="betEmpty" class="empty">No bets yet. Add your first bet above to see your stats and chart.</div>
+    <div id="MatchdayEmpty" class="empty">No Matchdays yet. Add your first Matchday above to see your stats and chart.</div>
   </section>
 
   <section class="panel">
@@ -175,17 +175,17 @@ td select{padding:5px 6px}
   <a id="cta" class="primary" href="#">Get a custom version</a>
 </section>
 
-<p class="note">For record-keeping only, not betting advice. You must be 18 or over to bet. If gambling is a problem for you or someone you know, Australian help is available on 1800 858 858 or at gamblinghelponline.org.au.</p>
+<p class="note">For record-keeping only, not Matchdayting advice. You must be 18 or over to Matchday. If gambling is a problem for you or someone you know, Australian help is available on 1800 858 858 or at gamblinghelponline.org.au.</p>
 </div>
 
 <script>
 /* ===== CONFIG: change these two lines to your own details ===== */
 const CTA_EMAIL = "adamcollins0609@gmail.com";
-const CTA_SUBJECT = "Custom Bet Ledger enquiry";
+const CTA_SUBJECT = "Custom Matchday Ledger enquiry";
 
 /* ===== STORAGE ===== */
-const KEY = "BetLedger.v1";
-const DEFAULTS = {start:1000, cur:"$", bets:[], gws:[], theme:null};
+const KEY = "MatchdayLedger.v1";
+const DEFAULTS = {start:1000, cur:"$", Matchdays:[], gws:[], theme:null};
 let S = load();
 function load(){
   try { return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(KEY)) || {}); }
@@ -200,7 +200,7 @@ const money = n => (n < 0 ? "-" : "") + S.cur + Math.abs(n).toFixed(2);
 const signed = n => (n > 0 ? "+" : "") + money(n);
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-/* profit of one bet: won = stake x (odds-1), lost = -stake, others = 0 */
+/* profit of one Matchday: won = stake x (odds-1), lost = -stake, others = 0 */
 function pl(b){ return b.res === "won" ? b.stake * (b.odds - 1) : b.res === "lost" ? -b.stake : 0; }
 const settled = b => b.res === "won" || b.res === "lost";
 
@@ -215,7 +215,7 @@ function msg(x, h, t){ x.fillStyle = css("--mute"); x.font = "14px system-ui"; x
 
 function drawLine(c, v, base){
   const [x, w, h] = fit(c);
-  if (v.length < 2) return msg(x, h, "Settle a bet to start your bankroll curve.");
+  if (v.length < 2) return msg(x, h, "Settle a Matchday to start your bankroll curve.");
   const lo = Math.min(...v, base), hi = Math.max(...v, base), pad = (hi - lo) * .15 || 1;
   const mn = lo - pad, mx = hi + pad;
   const X = i => 8 + i * (w - 16) / (v.length - 1), Y = n => h - 8 - (n - mn) / (mx - mn) * (h - 16);
@@ -248,14 +248,14 @@ function drawBars(c, rows){
 
 /* ===== RENDER: BANKROLL ===== */
 function renderBank(){
-  const sorted = S.bets.slice().sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+  const sorted = S.Matchdays.slice().sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
   const done = sorted.filter(settled);
   let cum = S.start, peak = S.start, dd = 0; const curve = [S.start];
   done.forEach(b => { cum += pl(b); curve.push(cum); peak = Math.max(peak, cum); dd = Math.max(dd, peak - cum); });
   const profit = cum - S.start;
   const staked = done.reduce((a, b) => a + b.stake, 0);
   const wins = done.filter(b => b.res === "won").length;
-  const pending = S.bets.filter(b => b.res === "pending").reduce((a, b) => a + b.stake, 0);
+  const pending = S.Matchdays.filter(b => b.res === "pending").reduce((a, b) => a + b.stake, 0);
 
   $("bank").textContent = money(cum);
   $("delta").innerHTML = '<span class="' + (profit >= 0 ? "up" : "down") + '">' + signed(profit) + "</span> since you started with " + money(S.start);
@@ -270,13 +270,13 @@ function renderBank(){
   $("stats").innerHTML = st.map(s => '<div class="stat"><span class="label">' + s[0] + '</span><b class="' + s[2] + '">' + s[1] + "</b></div>").join("");
 
   const rows = sorted.slice().reverse();
-  $("betEmpty").hidden = rows.length > 0;
-  $("betRows").innerHTML = rows.map(b => {
+  $("MatchdayEmpty").hidden = rows.length > 0;
+  $("MatchdayRows").innerHTML = rows.map(b => {
     const p = pl(b);
     const sel = ["pending", "won", "lost", "void"].map(r => '<option value="' + r + '"' + (r === b.res ? " selected" : "") + ">" + r[0].toUpperCase() + r.slice(1) + "</option>").join("");
     return "<tr><td>" + esc(b.date) + "</td><td>" + esc(b.name) + '<div class="label">' + esc(b.mkt) + "</div></td><td>" + money(b.stake) + "</td><td>" + b.odds.toFixed(2) +
       '</td><td><select data-res="' + b.id + '" aria-label="Result">' + sel + '</select></td><td class="' + (p > 0 ? "up" : p < 0 ? "down" : "") + '">' + (settled(b) ? signed(p) : "–") +
-      '</td><td><button class="del" data-del="' + b.id + '" aria-label="Delete bet">×</button></td></tr>';
+      '</td><td><button class="del" data-del="' + b.id + '" aria-label="Delete Matchday">×</button></td></tr>';
   }).join("");
 
   const m = {}; done.forEach(b => m[b.mkt] = (m[b.mkt] || 0) + pl(b));
@@ -285,7 +285,7 @@ function renderBank(){
     const wpc = Math.abs(m[k]) / top * 50;
     const side = m[k] >= 0 ? "left:50%;background:var(--win)" : "right:50%;background:var(--loss)";
     return '<div class="mrow"><span>' + esc(k) + '</span><div class="track"><div class="fill" style="' + side + ";width:" + wpc + '%"></div></div><b class="' + (m[k] >= 0 ? "up" : "down") + '">' + signed(m[k]) + "</b></div>";
-  }).join("") : '<div class="empty">Settled bets will be grouped by market here.</div>';
+  }).join("") : '<div class="empty">Settled Matchdays will be grouped by market here.</div>';
 
   drawLine($("chart"), curve, S.start);
 }
@@ -308,18 +308,18 @@ function renderFan(){
 function renderAll(){ renderBank(); renderFan(); }
 
 /* ===== EVENTS ===== */
-$("betForm").addEventListener("submit", e => {
+$("MatchdayForm").addEventListener("submit", e => {
   e.preventDefault();
-  S.bets.push({id: uid(), date: $("bDate").value, name: $("bName").value.trim(), mkt: $("bMkt").value, stake: +$("bStake").value, odds: +$("bOdds").value, res: $("bRes").value});
+  S.Matchdays.push({id: uid(), date: $("bDate").value, name: $("bName").value.trim(), mkt: $("bMkt").value, stake: +$("bStake").value, odds: +$("bOdds").value, res: $("bRes").value});
   save(); $("bName").value = ""; $("bStake").value = ""; $("bOdds").value = ""; renderBank();
 });
-$("betRows").addEventListener("change", e => {
+$("MatchdayRows").addEventListener("change", e => {
   const id = e.target.dataset.res; if (!id) return;
-  S.bets.find(b => b.id === id).res = e.target.value; save(); renderBank();
+  S.Matchdays.find(b => b.id === id).res = e.target.value; save(); renderBank();
 });
-$("betRows").addEventListener("click", e => {
+$("MatchdayRows").addEventListener("click", e => {
   const id = e.target.dataset.del; if (!id) return;
-  S.bets = S.bets.filter(b => b.id !== id); save(); renderBank();
+  S.Matchdays = S.Matchdays.filter(b => b.id !== id); save(); renderBank();
 });
 $("fanForm").addEventListener("submit", e => {
   e.preventDefault();
@@ -336,12 +336,12 @@ $("sStart").addEventListener("change", e => { S.start = Math.max(0, +e.target.va
 $("sCur").addEventListener("change", e => { S.cur = e.target.value.trim() || "$"; save(); renderBank(); });
 $("expBtn").addEventListener("click", () => {
   const q = v => '"' + String(v).replace(/"/g, '""') + '"';
-  const csv = ["date,selection,market,stake,odds,result,profit"].concat(S.bets.map(b => [b.date, q(b.name), q(b.mkt), b.stake, b.odds, b.res, pl(b).toFixed(2)].join(","))).join("\n");
+  const csv = ["date,selection,market,stake,odds,result,profit"].concat(S.Matchdays.map(b => [b.date, q(b.name), q(b.mkt), b.stake, b.odds, b.res, pl(b).toFixed(2)].join(","))).join("\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
-  a.download = "Bet-ledger-bets.csv"; a.click(); URL.revokeObjectURL(a.href);
+  a.download = "Matchday-ledger-Matchdays.csv"; a.click(); URL.revokeObjectURL(a.href);
 });
 $("clrBtn").addEventListener("click", () => {
-  if (confirm("Delete all bets and gameweeks from this browser? This cannot be undone.")) { S.bets = []; S.gws = []; save(); renderAll(); }
+  if (confirm("Delete all Matchdays and gameweeks from this browser? This cannot be undone.")) { S.Matchdays = []; S.gws = []; save(); renderAll(); }
 });
 
 /* ===== TABS ===== */
