@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Matchday Ledger – Bankroll &amp; Fantasy Tracker</title>
+<title>Bet Ledger – Bankroll &amp; Fantasy Tracker</title>
 <meta name="description" content="Free bankroll and fantasy football tracker. Your data never leaves your browser.">
 <style>
 /* ===== THEME TOKENS (edit colours here) ===== */
@@ -78,7 +78,7 @@ td select{padding:5px 6px}
 <!-- ===== HEADER ===== -->
 <header class="top">
   <div>
-    <h1><span class="mark" aria-hidden="true"></span>Matchday Ledger</h1>
+    <h1><span class="mark" aria-hidden="true"></span>Bet Ledger</h1>
     <p>Track your sports bankroll and fantasy form. Everything stays in this browser.</p>
   </div>
   <button id="themeBtn" aria-label="Switch light or dark theme">&#9680;</button>
@@ -181,10 +181,10 @@ td select{padding:5px 6px}
 <script>
 /* ===== CONFIG: change these two lines to your own details ===== */
 const CTA_EMAIL = "adamcollins0609@gmail.com";
-const CTA_SUBJECT = "Custom Matchday Ledger enquiry";
+const CTA_SUBJECT = "Custom Bet Ledger enquiry";
 
 /* ===== STORAGE ===== */
-const KEY = "matchdayLedger.v1";
+const KEY = "BetLedger.v1";
 const DEFAULTS = {start:1000, cur:"$", bets:[], gws:[], theme:null};
 let S = load();
 function load(){
@@ -338,7 +338,7 @@ $("expBtn").addEventListener("click", () => {
   const q = v => '"' + String(v).replace(/"/g, '""') + '"';
   const csv = ["date,selection,market,stake,odds,result,profit"].concat(S.bets.map(b => [b.date, q(b.name), q(b.mkt), b.stake, b.odds, b.res, pl(b).toFixed(2)].join(","))).join("\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
-  a.download = "matchday-ledger-bets.csv"; a.click(); URL.revokeObjectURL(a.href);
+  a.download = "Bet-ledger-bets.csv"; a.click(); URL.revokeObjectURL(a.href);
 });
 $("clrBtn").addEventListener("click", () => {
   if (confirm("Delete all bets and gameweeks from this browser? This cannot be undone.")) { S.bets = []; S.gws = []; save(); renderAll(); }
